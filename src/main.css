@@ -1,3 +1,7 @@
 body {
-    background: red;
+    background: rgb(250, 246, 246);
 };
+
+button {
+    color: aqua;
+}
