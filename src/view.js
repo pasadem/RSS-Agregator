@@ -1,5 +1,7 @@
 import onChange from 'on-change';
 import 'bootstrap';
+import removeChilds from './removeChilds';
+
 const renderFeedback = (i18nextInstance, feedback) => {
     const feedbackEl = document.querySelector('.feedback');
     if (feedback === 'succeed') {
@@ -17,6 +19,7 @@ const renderFeedback = (i18nextInstance, feedback) => {
 
 const renderFeeds = (feeds) => {
   const feedsElement = document.querySelector('.feeds');
+  removeChilds(feedsElement);
 
   const headingElement = document.createElement('h2');
   headingElement.textContent = 'Фиды';
@@ -57,6 +60,8 @@ const renderModal = (title, url, description, modal) => {
 
 const renderPosts = (i18nextInstance, posts) => {
   const postsElement = document.querySelector('.posts');
+  removeChilds(postsElement);
+
 
   const headingElement = document.createElement('h2');
   headingElement.textContent = 'Посты';
@@ -93,7 +98,7 @@ const renderPosts = (i18nextInstance, posts) => {
     buttonElement.setAttribute('data-bs-target', '#modal');
     buttonElement.addEventListener('click', (e) => {
       e.preventDefault();
-      const modal = document.querySelector('#modal');
+      var modal = document.querySelector('#modal')
       // modal.show();
       renderModal(title, url, description, modal);
       linkElement.classList.remove('fw-bold');
