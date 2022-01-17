@@ -1,16 +1,18 @@
 //import 'bootstrap';
-//import axios from 'axios';
+import _ from 'lodash';
+import axios from 'axios';
 import validator from './validator.js';
 import watchState from './view.js';
 import i18next from 'i18next';
 import ru from './locales/ru.js';
+import parser from './parser';
 
-/* const getUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+/* const getUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`; */
 
 const getData = (link) => {
-  const data = getUrl(link);
-  return axios.get(data)
-}; */
+  // const data = getUrl(link);
+  return axios.get(link)
+};
 
 export default () => {
   const i18nextInstance = i18next.createInstance();
@@ -43,15 +45,36 @@ export default () => {
     const formData = new FormData(formElement);
     const url = formData.get('url');
     validator(url)
-      /* .then((link) => {
-        getData(link)
-        console.log(link)}) */
-      .then(() => {
-        watchedState.form.processState = 'succeed';
-        formElement.reset();
-        inputElement.focus();
-        inputElement.classList.remove('is-invalid');
+      .then((link) => getData(link))
+      .then((response) => {
+        const { data: contents } = response;
+        //console.log(contents)
+      const { title, description, posts } = parser(contents);
+      console.log(title);
+      // const id = _.uniqueId();
+      watchedState.data.feeds.unshift({
+        url,
+        title,
+        description,
+      });
+      const allPosts = [
+        ...watchedState.data.posts,
+        ...posts.map((post) => { 
+          const id = _.uniqueId();
+          return ({...post, postId: id });
+        })
+      ];
+      watchedState.data.posts = _.orderBy(
+        allPosts,
+        'pubDate',
+      );
+      console.log(allPosts)
+      watchedState.form.processState = 'succeed';
+      formElement.reset();
+      inputElement.focus();
+      inputElement.classList.remove('is-invalid');
       })
+      //.then((data) => console.log(data))
       .catch((error) => {
         watchedState.form.error = error;
         //watchedState.form.processState = 'invalid';

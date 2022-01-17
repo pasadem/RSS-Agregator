@@ -4,5 +4,6 @@ export default {
       errors: {
         invalidUrl: 'Ссылка должна быть валидным URL',
     },
+    watchLink: 'Просмотр',
   },
 };
