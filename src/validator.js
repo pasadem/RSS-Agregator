@@ -1,8 +1,10 @@
 import * as yup from 'yup';
 
-const validator = (url) => {
-  const schema = yup.string().required().url();
-  
+const validator = (url, feeds) => {
+  const schema = yup.string()
+    .required('empty')
+    .url('invalidUrl')
+    .notOneOf(feeds.map(({ url }) => url ), 'duplicate');
   return schema.validate(url)
   };
   

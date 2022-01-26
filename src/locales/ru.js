@@ -3,7 +3,12 @@ export default {
       successMessage: 'RSS успешно загружен',
       errors: {
         invalidUrl: 'Ссылка должна быть валидным URL',
+        empty: 'Не должно быть пустым',
+        duplicate: 'RSS уже существует',
+        network: 'Ошибка сети',
     },
-    watchLink: 'Просмотр',
+      watchLink: 'Просмотр',
+      feeds: 'Фиды',
+      posts: 'Посты',
   },
 };
