@@ -3,7 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/dom';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import app from '../src/app';
+import app from '../src/app.js';
 
 // eslint-disable-next-line no-underscore-dangle
 const __filename = fileURLToPath(import.meta.url);
