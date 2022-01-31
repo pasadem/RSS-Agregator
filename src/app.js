@@ -2,10 +2,10 @@
 import _ from 'lodash';
 import axios from 'axios';
 import i18next from 'i18next';
-import validator from './validator';
-import watchState from './view';
-import ru from './locales/ru';
-import parser from './parser';
+import validator from './validator.js';
+import watchState from './view.js';
+import ru from './locales/ru.js';
+import parser from './parser.js';
 
 const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${url}`;
 const getData = (url) => axios.get(proxyUrl(url))

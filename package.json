@@ -2,7 +2,8 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "My webpack project",
-  "main": "index.js",
+  "main": "./src/app.js",
+  "type": "module",
   "scripts": {
     "test": "npx -n '--experimental-vm-modules --no-warnings' jest --colors",
     "build": "webpack --mode=production --node-env=production",
