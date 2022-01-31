@@ -1,11 +1,11 @@
-install: install-deps
-	npx simple-git-hooks
+install: 
+	npm install
 
-run:
-	bin/nodejs-package.js 10
+prettier:
+	npx prettier --write ./src/ ./__tests__/
 
-install-deps:
-	npm ci
+lint:
+	npx eslint --fix ./src/ ./__tests__/
 
 test:
 	npm test
@@ -13,10 +13,8 @@ test:
 test-coverage:
 	npm test -- --coverage --coverageProvider=v8
 
-lint:
-	npx eslint .
+build:
+	npm run build
 
-publish:
-	npm publish
-
-.PHONY: test
+start:
+	npm run start
