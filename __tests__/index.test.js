@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { screen, fireEvent, waitFor } from '@testing-library/dom';
+import { screen, fireEvent, waitFor, getByRole } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -9,25 +10,48 @@ import app from '../src/app.js';
 const __filename = fileURLToPath(import.meta.url);
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(__filename);
-const getFixturePath = (filename) => path.resolve(__dirname, '__fixtures__', filename);
-const readFixture = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFixture = (filename) => {
+  const fixturePath = getFixturePath(filename);
 
-let elements;
+  const rss = fs.readFileSync(fixturePath, 'utf-8');
+  return rss;
+};
 
-beforeEach(() => {
+const rssUrl = 'https://ru.hexlet.io/lessons.rss';
+const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
+const initHtml = fs.readFileSync(index, 'utf-8');
+
+beforeEach(async () => {
   const initHtml = readFixture('index.html');
   document.body.innerHTML = initHtml;
-  app();
+  await app();
 
-  const elements = {
-    form: screen.getByTestId('rss-form'),
-    input: screen.getByTestId('input'),
-    feedback: screen.getByTestId('feedback'),
-  };
+});
+
+test('succesLoadUrl', async () => {
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+  
+  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
+});
+
+test('uniqueUrl', async () => {
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+  
+  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
+
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+  
+  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
 });
 
 test('invalidUrl', async () => {
-  fireEvent.input(elements.input, { target: { value: 'hskfh' } });
-  fireEvent.form(elements.form);
-  await waitFor(() => expect(screen.findByText('Ссылка должна быть валидным URL')));
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), 'wrong');
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+  
+  await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)));
 });
+

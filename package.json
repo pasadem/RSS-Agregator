@@ -4,8 +4,11 @@
   "description": "My webpack project",
   "main": "./src/app.js",
   "type": "module",
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
   "scripts": {
-    "test": "npx -n '--experimental-vm-modules --no-warnings' jest --colors",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
@@ -39,6 +42,7 @@
     "@babel/preset-env": "^7.16.4",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/user-event": "^13.5.0",
     "@webpack-cli/generators": "^2.4.1",
     "babel-loader": "^8.2.3",
     "eslint": "^8.7.0",
