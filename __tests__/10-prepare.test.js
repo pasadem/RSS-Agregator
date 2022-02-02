@@ -35,7 +35,8 @@ test('succesLoadUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
-  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
+  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)
+  .then(() => {})));
 });
 
 test('validation (unique)', async () => {
@@ -47,21 +48,24 @@ test('validation (unique)', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
-  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
+  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)
+  .then(() => {})));
 });
 
 test('invalidUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), 'wrong');
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
-  await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)));
+  await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)
+  .then(() => {})));
 });
 
 test('handling non-rss url', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
-  await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)));
+  await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)
+  .then(() => {})));
 });
 
 test('handle failed loading', async () => {

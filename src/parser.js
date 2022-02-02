@@ -13,10 +13,7 @@ const parser = (data) => {
   const errorNode = doc.querySelector('parsererror');
   if (errorNode) {
     throw new Error('invalidRss');
-  } 
-  
-
-
+  }
   const title = getContent(doc, 'title');
   const description = getContent(doc, 'description');
   const items = doc.querySelectorAll('item');
