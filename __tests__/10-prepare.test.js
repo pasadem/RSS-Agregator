@@ -62,3 +62,23 @@ test('handling non-rss url', async () => {
   
   await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)));
 });
+
+test('handle failed loading', async () => {
+  
+  expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
+  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+
+  await waitFor(() => {
+    expect(screen.getByRole('textbox', { name: 'url' })).toHaveAttribute('readonly');
+  });
+  expect(screen.getByRole('button', { name: 'add' })).toBeDisabled();
+
+  await waitFor(() => {
+    expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
+  });
+  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+});
+

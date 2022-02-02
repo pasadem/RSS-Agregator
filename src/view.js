@@ -137,7 +137,7 @@ const watchedState = (i18nextInstance, state) => onChange(state, (path, value) =
   const postElement = document.querySelector('.posts');
   switch (path) {
     case 'form.processState':
-      renderForm(i18nextInstance, value);
+      renderForm(value);
       renderFeedback(i18nextInstance, value);
       break;
     case 'form.error':
