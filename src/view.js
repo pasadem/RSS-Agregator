@@ -2,7 +2,7 @@ import onChange from 'on-change';
 import 'bootstrap';
 
 const renderFeedback = (i18nextInstance, feedback) => {
-  // console.log(feedback.message)
+  console.log(feedback)
   const feedbackEl = document.querySelector('.feedback');
   if (feedback === 'succeed') {
     feedbackEl.textContent = i18nextInstance.t('successMessage');

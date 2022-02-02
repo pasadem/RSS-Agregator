@@ -9,6 +9,14 @@ const parser = (data) => {
   // eslint-disable-next-line no-undef
   const parse = new DOMParser();
   const doc = parse.parseFromString(data, 'application/xml');
+
+  const errorNode = doc.querySelector('parsererror');
+  if (errorNode) {
+    throw new Error('invalidRss');
+  } 
+  
+
+
   const title = getContent(doc, 'title');
   const description = getContent(doc, 'description');
   const items = doc.querySelectorAll('item');
