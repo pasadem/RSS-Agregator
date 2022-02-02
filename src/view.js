@@ -117,16 +117,27 @@ const renderPosts = (i18nextInstance, state) => {
     // headingElement.replaceWith(listElement);
   });
 };
-/* const renderForm = (processState) => {
+const renderForm = (processState) => {
     const formElement = document.querySelector('.rss-form');
     const inputElement = formElement.querySelector('input');
     const submitButton = formElement.querySelector('button');
-}; */
+
+    if (processState === 'submitting') {
+      inputElement.setAttribute('readonly', true);
+      formElement.setAttribute('disabled', true);
+      submitButton.setAttribute('disabled', true);
+    } else {
+      inputElement.removeAttribute('readonly');
+      formElement.removeAttribute('disabled');
+      submitButton.removeAttribute('disabled');
+    }
+};
 
 const watchedState = (i18nextInstance, state) => onChange(state, (path, value) => {
   const postElement = document.querySelector('.posts');
   switch (path) {
     case 'form.processState':
+      renderForm(i18nextInstance, value);
       renderFeedback(i18nextInstance, value);
       break;
     case 'form.error':
