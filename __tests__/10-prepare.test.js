@@ -36,7 +36,7 @@ test('succesLoadUrl', async () => {
   await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
 });
 
-test('uniqueUrl', async () => {
+/* test('validation (unique)', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
   
@@ -45,8 +45,8 @@ test('uniqueUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
   
-  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
-});
+  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
+}); */
 
 test('invalidUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), 'wrong');
