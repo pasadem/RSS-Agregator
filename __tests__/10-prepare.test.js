@@ -45,7 +45,7 @@ test('uniqueUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
   
-  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
+  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
 });
 
 test('invalidUrl', async () => {

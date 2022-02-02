@@ -1,5 +1,5 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
@@ -44,6 +44,5 @@ module.exports = {
       template: './index.html',
       inject: 'body',
     }),
-    new CleanWebpackPlugin(),
   ],
 };

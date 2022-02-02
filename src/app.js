@@ -66,6 +66,7 @@ export default () => {
     const formData = new FormData(formElement);
     const url = formData.get('url');
     validator(url, watchedState.feeds)
+      
       .then((link) => getData(link))
       .then((response) => {
         const { title, description, posts } = parser(response);
