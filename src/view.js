@@ -2,7 +2,6 @@ import onChange from 'on-change';
 import 'bootstrap';
 
 const renderFeedback = (i18nextInstance, feedback) => {
-  console.log(feedback)
   const feedbackEl = document.querySelector('.feedback');
   if (feedback === 'succeed') {
     feedbackEl.textContent = i18nextInstance.t('successMessage');
@@ -118,19 +117,19 @@ const renderPosts = (i18nextInstance, state) => {
   });
 };
 const renderForm = (processState) => {
-    const formElement = document.querySelector('.rss-form');
-    const inputElement = formElement.querySelector('input');
-    const submitButton = formElement.querySelector('button');
+  const formElement = document.querySelector('.rss-form');
+  const inputElement = formElement.querySelector('input');
+  const submitButton = formElement.querySelector('button');
 
-    if (processState === 'submitting') {
-      inputElement.setAttribute('readonly', true);
-      formElement.setAttribute('disabled', true);
-      submitButton.setAttribute('disabled', true);
-    } else {
-      inputElement.removeAttribute('readonly');
-      formElement.removeAttribute('disabled');
-      submitButton.removeAttribute('disabled');
-    }
+  if (processState === 'submitting') {
+    inputElement.setAttribute('readonly', true);
+    formElement.setAttribute('disabled', true);
+    submitButton.setAttribute('disabled', true);
+  } else {
+    inputElement.removeAttribute('readonly');
+    formElement.removeAttribute('disabled');
+    submitButton.removeAttribute('disabled');
+  }
 };
 
 const watchedState = (i18nextInstance, state) => onChange(state, (path, value) => {

@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
-import { screen, fireEvent, waitFor, getByRole } from '@testing-library/dom';
-import userEvent from '@testing-library/user-event';
+import {
+  screen, fireEvent, waitFor,
+} from '@testing-library/dom';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -19,52 +20,51 @@ const readFixture = (filename) => {
 };
 
 const rssUrl = 'https://ru.hexlet.io/lessons.rss';
-const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
-const initHtml = fs.readFileSync(index, 'utf-8');
+// const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
+// const initHtml = fs.readFileSync(index, 'utf-8');
 const htmlUrl = 'https://ru.hexlet.io';
 
 beforeEach(async () => {
   const initHtml = readFixture('index.html');
   document.body.innerHTML = initHtml;
-  await app();
 
+  await app();
 });
 
 test('succesLoadUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  
+
   await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
 });
 
 test('validation (unique)', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  
+
   await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
 
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  
+
   await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
 });
 
 test('invalidUrl', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), 'wrong');
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  
+
   await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)));
 });
 
 test('handling non-rss url', async () => {
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  
+
   await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)));
 });
 
 test('handle failed loading', async () => {
-  
   expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
   expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
 
@@ -81,4 +81,3 @@ test('handle failed loading', async () => {
   });
   expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
 });
-
