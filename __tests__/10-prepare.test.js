@@ -21,6 +21,7 @@ const readFixture = (filename) => {
 const rssUrl = 'https://ru.hexlet.io/lessons.rss';
 const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
 const initHtml = fs.readFileSync(index, 'utf-8');
+const htmlUrl = 'https://ru.hexlet.io';
 
 beforeEach(async () => {
   const initHtml = readFixture('index.html');
@@ -55,3 +56,9 @@ test('invalidUrl', async () => {
   await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)));
 });
 
+test('handling non-rss url', async () => {
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+  
+  await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)));
+});
