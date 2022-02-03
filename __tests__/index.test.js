@@ -19,6 +19,8 @@ const readFixture = (filename) => {
   return rss;
 };
 
+const rss1 = readFixture('rss1.xml');
+
 const rssUrl = 'https://ru.hexlet.io/lessons.rss';
 // const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
 // const initHtml = fs.readFileSync(index, 'utf-8');
@@ -85,4 +87,13 @@ test('handle failed loading', async () => {
     expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
   });
   expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+});
+
+test('feeds and posts', async () => {
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rss1);
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+    expect(await screen.findByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Практические уроки по программированию/i)).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: /Агрегация \/ Python: Деревья/i })).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: /Traversal \/ Python: Деревья/i })).toBeInTheDocument();
 });

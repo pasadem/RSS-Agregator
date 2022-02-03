@@ -4,8 +4,7 @@ env:
   node: true
 extends:
   - airbnb-base
-  - plugin:jest/recommended
-  - plugin:jest-dom/recommended
+  
 parserOptions:
   ecmaVersion: latest
   sourceType: module
@@ -14,8 +13,4 @@ rules:
   import/no-unresolved: 0
   no-param-reassign: 0
   no-console: 0
-plugins:
-  - jest
-  - testing-library
-  - jest-dom
 
