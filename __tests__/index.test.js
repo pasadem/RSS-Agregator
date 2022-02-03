@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import {
   screen, fireEvent, waitFor,
 } from '@testing-library/dom';
-import userEvent from '@testing-library/user-event';
+// import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import fs from 'fs';
