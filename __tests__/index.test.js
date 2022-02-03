@@ -22,6 +22,9 @@ const readFixture = (filename) => {
   return rss;
 };
 
+const html = readFixture('index.html');
+const rss1 = readFixture('rss1.xml');
+
 const corsProxy = 'https://hexlet-allorigins.herokuapp.com';
 const corsProxyApi = `${corsProxy}/get`;
 
@@ -52,9 +55,6 @@ afterAll(() => {
   server.close();
 });
 
-const rss1 = readFixture('rss1.xml');
-console.log(rss1)
-
 const rssUrl = 'https://ru.hexlet.io/lessons.rss';
 const index = path.join('__fixtures__', 'index.html');
 const initHtml = fs.readFileSync(index, 'utf-8');
@@ -63,8 +63,11 @@ const htmlUrl = 'https://ru.hexlet.io';
 beforeEach(async () => {
   // const initHtml = readFixture('index.html');
   document.body.innerHTML = initHtml;
-
   await app();
+});
+
+afterEach(() => {
+  server.resetHandlers();
 });
 
 test('succesLoadUrl', async () => {
@@ -98,6 +101,8 @@ test('invalidUrl', async () => {
 });
 
 test('handling non-rss url', async () => {
+  const handler = getResponseHandler(htmlUrl, html);
+  server.use(handler);
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
@@ -128,8 +133,12 @@ test('feeds and posts', async () => {
   server.use(handler);
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  expect(await screen.findByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
-  expect(await screen.findByText(/Практические уроки по программированию/i)).toBeInTheDocument();
-  expect(await screen.findByRole('link', { name: /Агрегация \/ Python: Деревья/i })).toBeInTheDocument();
-  expect(await screen.findByRole('link', { name: /Traversal \/ Python: Деревья/i })).toBeInTheDocument();
+  await waitFor(() => expect(screen.findByText(/Новые уроки на Хекслет/i)
+    .then(() => {})));
+  await waitFor(() => expect(screen.findByText(/Практические уроки по программированию/i)
+    .then(() => {})));
+  await waitFor(() => expect(screen.findByText(/Агрегация \/ Python: Деревья/i)
+    .then(() => {})));
+  await waitFor(() => expect(screen.findByText(/Traversal \/ Python: Деревья/i)
+    .then(() => {})));
 });
