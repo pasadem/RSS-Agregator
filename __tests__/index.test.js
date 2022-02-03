@@ -2,6 +2,9 @@ import '@testing-library/jest-dom';
 import {
   screen, fireEvent, waitFor,
 } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -19,15 +22,46 @@ const readFixture = (filename) => {
   return rss;
 };
 
+const corsProxy = 'https://hexlet-allorigins.herokuapp.com';
+const corsProxyApi = `${corsProxy}/get`;
+
+const getResponseHandler = (url, data) => rest.get(corsProxyApi, (req, res, ctx) => {
+  if (!req.url.searchParams.get('disableCache')) {
+    console.error('Expect proxified url to have "disableCache" param');
+    return res(ctx.status(500));
+  }
+
+  if (req.url.searchParams.get('url') !== url) {
+    console.error('Expect proxified url to have "url" param with correct url');
+    return res(ctx.status(500));
+  }
+
+  return res(
+    ctx.status(200),
+    ctx.json({ contents: data }),
+  );
+});
+
+const server = setupServer();
+
+beforeAll(() => {
+  server.listen();
+});
+
+afterAll(() => {
+  server.close();
+});
+
 const rss1 = readFixture('rss1.xml');
+console.log(rss1)
 
 const rssUrl = 'https://ru.hexlet.io/lessons.rss';
-// const index = path.join(__dirname, '..', '__fixtures__', 'index.html');
-// const initHtml = fs.readFileSync(index, 'utf-8');
+const index = path.join('__fixtures__', 'index.html');
+const initHtml = fs.readFileSync(index, 'utf-8');
 const htmlUrl = 'https://ru.hexlet.io';
 
 beforeEach(async () => {
-  const initHtml = readFixture('index.html');
+  // const initHtml = readFixture('index.html');
   document.body.innerHTML = initHtml;
 
   await app();
@@ -90,10 +124,12 @@ test('handle failed loading', async () => {
 });
 
 test('feeds and posts', async () => {
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rss1);
+  const handler = getResponseHandler(rssUrl, rss1);
+  server.use(handler);
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
-    expect(await screen.findByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
-    expect(await screen.findByText(/Практические уроки по программированию/i)).toBeInTheDocument();
-    expect(await screen.findByRole('link', { name: /Агрегация \/ Python: Деревья/i })).toBeInTheDocument();
-    expect(await screen.findByRole('link', { name: /Traversal \/ Python: Деревья/i })).toBeInTheDocument();
+  expect(await screen.findByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
+  expect(await screen.findByText(/Практические уроки по программированию/i)).toBeInTheDocument();
+  expect(await screen.findByRole('link', { name: /Агрегация \/ Python: Деревья/i })).toBeInTheDocument();
+  expect(await screen.findByRole('link', { name: /Traversal \/ Python: Деревья/i })).toBeInTheDocument();
 });
