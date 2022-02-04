@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
 import {
   screen, fireEvent, waitFor,
 } from '@testing-library/dom';
 // import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+// import { rest } from 'msw';
+// import { setupServer } from 'msw/node';
 import fs from 'fs';
+import nock from 'nock';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import app from '../src/app.js';
@@ -25,27 +27,48 @@ const readFixture = (filename) => {
 const html = readFixture('index.html');
 const rss1 = readFixture('rss1.xml');
 
-const corsProxy = 'https://hexlet-allorigins.herokuapp.com';
-const corsProxyApi = `${corsProxy}/get`;
+const proxyUrl = 'https://hexlet-allorigins.herokuapp.com';
 
-const getResponseHandler = (url, data) => rest.get(corsProxyApi, (req, res, ctx) => {
-  if (!req.url.searchParams.get('disableCache')) {
-    console.error('Expect proxified url to have "disableCache" param');
-    return res(ctx.status(500));
-  }
+const rssUrl = 'https://ru.hexlet.io/lessons.rss';
+const index = path.join('__fixtures__', 'index.html');
+const initHtml = fs.readFileSync(index, 'utf-8');
+const htmlUrl = 'https://ru.hexlet.io/';
+let elements;
+const nockHeaders = {
+  'Access-Control-Allow-Origin': '*',
+};
 
-  if (req.url.searchParams.get('url') !== url) {
-    console.error('Expect proxified url to have "url" param with correct url');
-    return res(ctx.status(500));
-  }
+beforeEach(() => {
+  document.body.innerHTML = initHtml;
+  app();
 
-  return res(
-    ctx.status(200),
-    ctx.json({ contents: data }),
-  );
+  elements = {
+    input: screen.getByTestId('input'),
+    form: screen.getByTestId('rss-form'),
+    feedback: screen.getByTestId('feedback'),
+  };
 });
 
-const server = setupServer();
+test('invalid url', async () => {
+  fireEvent.input(elements.input, { target: { value: 'wrong' } });
+  fireEvent.submit(elements.form);
+  await waitFor(() => expect(screen.getByText('Ссылка должна быть валидным URL')));
+});
+
+test('invalid Rss', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get(`/get?disableCache=true&url=${htmlUrl}`)
+    .reply(200, { contents: 'wrong' }, nockHeaders);
+
+  fireEvent.input(elements.input, {
+    target: { value: htmlUrl },
+  });
+  fireEvent.submit(elements.form);
+  await waitFor(() => expect(screen.getByText('Ресурс не содержит валидный RSS')));
+});
+/* const server = setupServer(
+  rest.get(corsProxyApi, (req, res, ctx) => res(ctx.json({ contents: rss1 }))),
+);
 
 beforeAll(() => {
   server.listen();
@@ -55,13 +78,7 @@ afterAll(() => {
   server.close();
 });
 
-const rssUrl = 'https://ru.hexlet.io/lessons.rss';
-const index = path.join('__fixtures__', 'index.html');
-const initHtml = fs.readFileSync(index, 'utf-8');
-const htmlUrl = 'https://ru.hexlet.io';
-
 beforeEach(async () => {
-  // const initHtml = readFixture('index.html');
   document.body.innerHTML = initHtml;
   await app();
 });
@@ -75,7 +92,7 @@ test('succesLoadUrl', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
   await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)
-    .then(() => {})));
+    .toBeInTheDocument()));
 });
 
 test('validation (unique)', async () => {
@@ -101,8 +118,6 @@ test('invalidUrl', async () => {
 });
 
 test('handling non-rss url', async () => {
-  const handler = getResponseHandler(htmlUrl, html);
-  server.use(handler);
   fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
   fireEvent.click(screen.getByRole('button', { name: 'add' }));
 
@@ -127,18 +142,4 @@ test('handle failed loading', async () => {
   });
   expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
 });
-
-test('feeds and posts', async () => {
-  const handler = getResponseHandler(rssUrl, rss1);
-  server.use(handler);
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-  await waitFor(() => expect(screen.findByText(/Новые уроки на Хекслет/i)
-    .then(() => {})));
-  await waitFor(() => expect(screen.findByText(/Практические уроки по программированию/i)
-    .then(() => {})));
-  await waitFor(() => expect(screen.findByText(/Агрегация \/ Python: Деревья/i)
-    .then(() => {})));
-  await waitFor(() => expect(screen.findByText(/Traversal \/ Python: Деревья/i)
-    .then(() => {})));
-});
+ */
