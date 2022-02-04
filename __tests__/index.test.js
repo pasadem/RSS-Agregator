@@ -24,12 +24,12 @@ const readFixture = (filename) => {
   return rss;
 };
 
-const html = readFixture('index.html');
-const rss1 = readFixture('rss1.xml');
+// const html = readFixture('index.html');
+// const rss1 = readFixture('rss1.xml');
 
-const proxyUrl = 'https://hexlet-allorigins.herokuapp.com';
+// const proxyUrl = 'https://hexlet-allorigins.herokuapp.com';
 
-const rssUrl = 'https://ru.hexlet.io/lessons.rss';
+// const rssUrl = 'https://ru.hexlet.io/lessons.rss';
 const index = path.join('__fixtures__', 'index.html');
 const initHtml = fs.readFileSync(index, 'utf-8');
 const htmlUrl = 'https://ru.hexlet.io/';
@@ -57,7 +57,7 @@ test('invalid url', async () => {
 
 test('invalid Rss', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
-    .get(`/get?disableCache=true&url=${htmlUrl}`)
+    .get("/get?disableCache=true&url=https://ru.hexlet.io/")
     .reply(200, { contents: 'wrong' }, nockHeaders);
 
   fireEvent.input(elements.input, {
