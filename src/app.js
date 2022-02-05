@@ -8,6 +8,7 @@ import ru from './locales/ru.js';
 import parser from './parser.js';
 
 const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${url}`;
+
 const getData = (url) => axios.get(proxyUrl(url))
   .then((response) => response.data.contents)
   .catch(() => {
@@ -68,6 +69,7 @@ export default () => {
     validator(url, watchedState.feeds)
       .then((link) => getData(link))
       .then((response) => {
+        console.log(response);
         const { title, description, posts } = parser(response);
         watchedState.feeds.unshift({
           url,

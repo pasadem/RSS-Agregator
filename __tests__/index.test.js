@@ -3,9 +3,8 @@ import '@testing-library/jest-dom/extend-expect';
 import {
   screen, fireEvent, waitFor,
 } from '@testing-library/dom';
-// import userEvent from '@testing-library/user-event';
-// import { rest } from 'msw';
-// import { setupServer } from 'msw/node';
+import { setupServer } from 'msw/node';
+
 import fs from 'fs';
 import nock from 'nock';
 import path, { dirname } from 'path';
@@ -25,18 +24,18 @@ const readFixture = (filename) => {
 };
 
 // const html = readFixture('index.html');
-// const rss1 = readFixture('rss1.xml');
+const rss1 = readFixture('rss1.xml');
 
 // const proxyUrl = 'https://hexlet-allorigins.herokuapp.com';
 
 // const rssUrl = 'https://ru.hexlet.io/lessons.rss';
 const index = path.join('__fixtures__', 'index.html');
 const initHtml = fs.readFileSync(index, 'utf-8');
-const htmlUrl = 'https://ru.hexlet.io/';
+// const htmlUrl = 'https://ru.hexlet.io/';
+
+// const server = setupServer();
+
 let elements;
-const nockHeaders = {
-  'Access-Control-Allow-Origin': '*',
-};
 
 beforeEach(() => {
   document.body.innerHTML = initHtml;
@@ -57,89 +56,41 @@ test('invalid url', async () => {
 
 test('invalid Rss', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
-    .get("/get?disableCache=true&url=https://ru.hexlet.io/")
-    .reply(200, { contents: 'wrong' }, nockHeaders);
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/')
+    .reply(200, { contents: 'wrong' }, { 'Access-Control-Allow-Origin': '*' });
 
   fireEvent.input(elements.input, {
-    target: { value: htmlUrl },
+    target: { value: 'https://ru.hexlet.io/' },
   });
   fireEvent.submit(elements.form);
-  await waitFor(() => expect(screen.getByText('Ресурс не содержит валидный RSS')));
-});
-/* const server = setupServer(
-  rest.get(corsProxyApi, (req, res, ctx) => res(ctx.json({ contents: rss1 }))),
-);
-
-beforeAll(() => {
-  server.listen();
+  expect(await screen.findByText(/Ресурс не содержит валидный RSS/i));
 });
 
-afterAll(() => {
-  server.close();
-});
+test('success loaded', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
+    .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
 
-beforeEach(async () => {
-  document.body.innerHTML = initHtml;
-  await app();
-});
-
-afterEach(() => {
-  server.resetHandlers();
-});
-
-test('succesLoadUrl', async () => {
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)
-    .toBeInTheDocument()));
-});
-
-test('validation (unique)', async () => {
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)
-    .then(() => {})));
-
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), rssUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)
-    .then(() => {})));
-});
-
-test('invalidUrl', async () => {
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), 'wrong');
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => expect(screen.findByText(/Ссылка должна быть валидным URL/i)
-    .then(() => {})));
-});
-
-test('handling non-rss url', async () => {
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => expect(screen.findByText(/Ресурс не содержит валидный RSS/i)
-    .then(() => {})));
-});
-
-test('handle failed loading', async () => {
-  expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
-  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
-
-  fireEvent.input(screen.getByRole('textbox', { name: 'url' }), htmlUrl);
-  fireEvent.click(screen.getByRole('button', { name: 'add' }));
-
-  await waitFor(() => {
-    expect(screen.getByRole('textbox', { name: 'url' })).toHaveAttribute('readonly');
+  fireEvent.input(elements.input, {
+    target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
-  expect(screen.getByRole('button', { name: 'add' })).toBeDisabled();
-
-  await waitFor(() => {
-    expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
-  });
-  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+  fireEvent.submit(elements.form);
+  expect(await screen.findByText(/RSS успешно загружен/i));
 });
- */
+test('duplicate', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
+    .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
+
+  fireEvent.input(elements.input, {
+    target: { value: 'https://ru.hexlet.io/lessons.rss' },
+  });
+  fireEvent.submit(elements.form);
+  expect(await screen.findByText(/RSS успешно загружен/i));
+
+  fireEvent.input(elements.input, {
+    target: { value: 'https://ru.hexlet.io/lessons.rss' },
+  });
+  fireEvent.submit(elements.form);
+  expect(await screen.findByText(/RSS уже существует/i));
+});
