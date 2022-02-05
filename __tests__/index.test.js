@@ -77,6 +77,7 @@ test('valid Rss', async () => {
   fireEvent.submit(elements.form);
   await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
 });
+
 test('duplicate Rss', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
@@ -93,4 +94,16 @@ test('duplicate Rss', async () => {
   });
   fireEvent.submit(elements.form);
   await waitFor(() => expect(screen.getByText(/RSS уже существует/i)));
+});
+
+test('network error', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
+    .reply(500);
+
+  fireEvent.input(elements.input, {
+    target: { value: 'https://ru.hexlet.io/lessons.rss' },
+  });
+  fireEvent.submit(elements.form);
+  await waitFor(() => expect(screen.getByText(/Ошибка сети/i)));
 });
