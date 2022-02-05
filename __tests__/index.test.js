@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import {
   screen, fireEvent, waitFor,
 } from '@testing-library/dom';
-import { setupServer } from 'msw/node';
+// import { setupServer } from 'msw/node';
 
 import fs from 'fs';
 import nock from 'nock';
@@ -63,10 +63,10 @@ test('invalid Rss', async () => {
     target: { value: 'https://ru.hexlet.io/' },
   });
   fireEvent.submit(elements.form);
-  expect(await screen.findByText(/Ресурс не содержит валидный RSS/i));
+  await waitFor(() => expect(screen.getByText(/Ресурс не содержит валидный RSS/i)));
 });
 
-test('success loaded', async () => {
+test('valid Rss', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
@@ -75,9 +75,9 @@ test('success loaded', async () => {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  expect(await screen.findByText(/RSS успешно загружен/i));
+  await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
 });
-test('duplicate', async () => {
+test('duplicate Rss', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
@@ -86,11 +86,11 @@ test('duplicate', async () => {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  expect(await screen.findByText(/RSS успешно загружен/i));
+  await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
 
   fireEvent.input(elements.input, {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  expect(await screen.findByText(/RSS уже существует/i));
+  await waitFor(() => expect(screen.getByText(/RSS уже существует/i)));
 });
