@@ -139,8 +139,6 @@ test('loading feeds', async () => {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  await waitFor(() => {
-    expect(screen.getByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
-    expect(screen.findByText(/Практические уроки по программированию/i));
-  });
+  await waitFor(() => expect(screen.getByText(/Новые уроки на Хекслете/i)));
+  await waitFor(() => expect(screen.getByText(/Практические уроки по программированию/i)));
 });
