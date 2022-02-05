@@ -107,3 +107,25 @@ test('network error', async () => {
   fireEvent.submit(elements.form);
   await waitFor(() => expect(screen.getByText(/Ошибка сети/i)));
 });
+
+test('handle successful loading', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
+    .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
+
+  expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
+  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+
+  fireEvent.input(screen.getByRole('textbox', { name: 'url' }));
+  fireEvent.click(screen.getByRole('button', { name: 'add' }));
+
+  await waitFor(() => {
+    expect(screen.getByRole('textbox', { name: 'url' })).toHaveAttribute('readonly');
+  });
+  expect(screen.getByRole('button', { name: 'add' })).toBeDisabled();
+
+  await waitFor(() => {
+    expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
+  });
+  expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+});
