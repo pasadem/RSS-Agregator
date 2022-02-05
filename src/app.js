@@ -69,7 +69,6 @@ export default () => {
     validator(url, watchedState.feeds)
       .then((link) => getData(link))
       .then((response) => {
-        console.log(response);
         const { title, description, posts } = parser(response);
         watchedState.feeds.unshift({
           url,

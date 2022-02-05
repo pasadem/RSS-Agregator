@@ -108,7 +108,7 @@ test('network error', async () => {
   await waitFor(() => expect(screen.getByText(/Ошибка сети/i)));
 });
 
-test('handle successful loading', async () => {
+test('successful loading', async () => {
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
@@ -128,4 +128,17 @@ test('handle successful loading', async () => {
     expect(screen.getByRole('textbox', { name: 'url' })).not.toHaveAttribute('readonly');
   });
   expect(screen.getByRole('button', { name: 'add' })).toBeEnabled();
+});
+
+test('loading feeds', async () => {
+  nock('https://hexlet-allorigins.herokuapp.com')
+    .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
+    .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
+
+  fireEvent.input(elements.input, {
+    target: { value: 'https://ru.hexlet.io/lessons.rss' },
+  });
+  fireEvent.submit(elements.form);
+  expect(await screen.findByText(/Новые уроки на Хекслете/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Практические уроки по программированию/i));
 });
