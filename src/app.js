@@ -7,7 +7,7 @@ import watchState from './view.js';
 import ru from './locales/ru.js';
 import parser from './parser.js';
 
-const proxyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
+const proxyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
 const getData = (url) => axios.get(proxyUrl(url))
   .then((response) => response.data.contents)
