@@ -75,7 +75,7 @@ test('valid Rss', async () => {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  await waitFor(() => expect(screen.findByText(/RSS успешно загружен/i)));
+  await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
 });
 
 test('duplicate Rss', async () => {
@@ -93,11 +93,11 @@ test('duplicate Rss', async () => {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
   fireEvent.submit(elements.form);
-  await waitFor(() => expect(screen.findByText(/RSS уже существует/i)));
+  await waitFor(() => expect(screen.getByText(/RSS уже существует/i)));
 });
 
 test('network error', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(500);
 
@@ -109,7 +109,7 @@ test('network error', async () => {
 });
 
 test('successful loading', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
 
