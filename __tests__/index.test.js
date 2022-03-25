@@ -55,7 +55,7 @@ test('invalid url', async () => {
 });
 
 test('invalid Rss', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/')
     .reply(200, { contents: 'wrong' }, { 'Access-Control-Allow-Origin': '*' });
 
@@ -67,7 +67,7 @@ test('invalid Rss', async () => {
 });
 
 test('valid Rss', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
 
@@ -79,7 +79,7 @@ test('valid Rss', async () => {
 });
 
 test('duplicate Rss', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
 
@@ -131,7 +131,7 @@ test('successful loading', async () => {
 });
 
 test('loading feeds', async () => {
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock('https://allorigins.hexlet.app')
     .get('/get?disableCache=true&url=https://ru.hexlet.io/lessons.rss')
     .reply(200, { contents: rss1 }, { 'Access-Control-Allow-Origin': '*' });
 
