@@ -51,7 +51,7 @@ beforeEach(() => {
 test('invalid url', async () => {
   fireEvent.input(elements.input, { target: { value: 'wrong' } });
   fireEvent.submit(elements.form);
-  await waitFor(() => expect(screen.getByText('Ссылка должна быть валидным URL')));
+  await waitFor(() => valid-expect(screen.getByText('Ссылка должна быть валидным URL')));
 });
 
 test('invalid Rss', async () => {
