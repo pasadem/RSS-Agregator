@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import {
   screen, fireEvent, waitFor,
-} from '@testing-library/dom';
+} from '@testing-library/react';
 // import { setupServer } from 'msw/node';
 
 import fs from 'fs';
