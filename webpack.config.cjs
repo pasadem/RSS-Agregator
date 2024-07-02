@@ -15,6 +15,9 @@ module.exports = {
   module: {
     rules: [
       {
+        'testing-library/no-dom-import': ['error', 'react'],
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
