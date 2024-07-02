@@ -89,7 +89,7 @@ test('duplicate Rss', async () => {
   });
   fireEvent.submit(elements.form);
   await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
-                       
+                   
   fireEvent.input(elements.input, {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
