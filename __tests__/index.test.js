@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import {
   screen, fireEvent, waitFor,
-} from '@testing-library/dom';
+} from '@testing-library/react';
 // import { setupServer } from 'msw/node';
 
 import fs from 'fs';
@@ -89,7 +89,7 @@ test('duplicate Rss', async () => {
   });
   fireEvent.submit(elements.form);
   await waitFor(() => expect(screen.getByText(/RSS успешно загружен/i)));
-            
+
   fireEvent.input(elements.input, {
     target: { value: 'https://ru.hexlet.io/lessons.rss' },
   });
